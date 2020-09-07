@@ -58,4 +58,5 @@ func UpdateClaps(c *fiber.Ctx) {
 	}
 
 	fmt.Printf("%s   %v  %s", sourceURL, item, sourceIP)
+	c.JSON(item.Claps)
 }

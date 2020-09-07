@@ -28,9 +28,9 @@ func GetClaps(c *fiber.Ctx) {
 
 	item, err := utils.GetItem(sourceURL)
 	if err != nil {
-		c.Send(0)
+		c.JSON(0)
 		return
 	}
 
-	c.Send(item.Claps)
+	c.JSON(item.Claps)
 }

@@ -8,14 +8,11 @@ import (
 	"github.com/gofiber/fiber"
 )
 
-// URLs input urls
-type URLs []string
-
 // GetMultiple get multiple url
 func GetMultiple(c *fiber.Ctx) {
 	body := c.Body()
 
-	var listURL URLs
+	var listURL []string
 	err := json.Unmarshal([]byte(body), &listURL)
 	if err != nil {
 		c.Next(errors.New("getMultiple requires an array"))
