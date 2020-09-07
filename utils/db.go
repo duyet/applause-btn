@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/dgraph-io/badger"
+	"github.com/dgraph-io/badger/v2"
 )
 
 // GetDB open connection to badger db
