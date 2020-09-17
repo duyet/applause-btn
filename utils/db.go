@@ -9,15 +9,22 @@ import (
 	"github.com/dgraph-io/badger/v2"
 )
 
+var db *badger.DB
+
 // GetDB open connection to badger db
 func GetDB() *badger.DB {
+	if db != nil {
+		return db
+	}
+
 	badgerLocation := "/tmp/badger"
 	val, ok := os.LookupEnv("DB_LOCATION")
 	if ok {
 		badgerLocation = val
 	}
 
-	db, err := badger.Open(badger.DefaultOptions(badgerLocation))
+	var err error
+	db, err = badger.Open(badger.DefaultOptions(badgerLocation))
 	if err != nil {
 		log.Fatal(err)
 	}
