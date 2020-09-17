@@ -35,7 +35,7 @@ func GetDB() *badger.DB {
 // GetItem get Item from DB
 func GetItem(sourceURL string) (ret Item, err error) {
 	db := GetDB()
-	defer db.Close()
+	// defer db.Close()
 
 	err = db.View(func(txn *badger.Txn) error {
 		item, err := txn.Get([]byte(sourceURL))
@@ -76,7 +76,7 @@ func GetItems(listURL []string) (ret []Item, err error) {
 // PutItem put Item to DB
 func PutItem(sourceURL string, item Item) error {
 	db := GetDB()
-	defer db.Close()
+	// defer db.Close()
 
 	var b bytes.Buffer
 	e := gob.NewEncoder(&b)
