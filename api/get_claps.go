@@ -5,32 +5,28 @@ import (
 	"fmt"
 
 	"github.com/duyet/applause-btn/utils"
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 // GetClaps api get claps
-func GetClaps(c *fiber.Ctx) {
+func GetClaps(c *fiber.Ctx) error {
 	if c.Get("Referer", "") == "" {
-		c.Next(errors.New("no referer set"))
-		return
+		return errors.New("no referer set")
 	}
 
 	sourceURL, err := utils.GetSourceURL(c)
 	if err != nil {
-		c.Next(err)
-		return
+		return err
 	}
 
 	if utils.IsURL(sourceURL) == false {
-		c.Next(fmt.Errorf("Referer is not a URL [%s]", sourceURL))
-		return
+		return fmt.Errorf("Referer is not a URL [%s]", sourceURL)
 	}
 
 	item, err := utils.GetItem(sourceURL)
 	if err != nil {
-		c.JSON(0)
-		return
+		return c.JSON(0)
 	}
 
-	c.JSON(item.Claps)
+	return c.JSON(item.Claps)
 }

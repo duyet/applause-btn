@@ -4,16 +4,17 @@ import (
 	"log"
 
 	"github.com/duyet/applause-btn/api"
-	"github.com/gofiber/cors"
-	"github.com/gofiber/fiber"
-	"github.com/gofiber/fiber/middleware"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/compress"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func main() {
 	app := Setup()
 
 	// Start server
-	log.Fatal(app.Listen(3000))
+	log.Fatal(app.Listen(":3000"))
 }
 
 // Setup Setup a fiber app with all of its routes
@@ -23,13 +24,13 @@ func Setup() *fiber.App {
 	// CORS
 	app.Use(cors.New())
 	// Compression config
-	app.Use(middleware.Compress())
+	app.Use(compress.New())
 	// Logger
-	app.Use(middleware.Logger())
+	app.Use(logger.New())
 
 	// Setup routes
-	app.Get("/", func(c *fiber.Ctx) {
-		c.Send("Hello, World!")
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.Send([]byte("Hello, World!"))
 	})
 	app.Get("/get-claps", api.GetClaps)
 	app.Post("/get-multiple", api.GetMultiple)

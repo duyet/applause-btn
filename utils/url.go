@@ -6,7 +6,7 @@ import (
 	"net/url"
 
 	"github.com/PuerkitoBio/purell"
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 // IsURL check is url or not
