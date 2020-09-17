@@ -32,7 +32,7 @@ func UpdateClaps(c *fiber.Ctx) error {
 	clapIncrement := utils.Clamp(claps, 1, 10)
 	// var totalClaps int
 
-	log.Printf("adding %v claps to %s", clapIncrement, sourceURL)
+	log.Printf("Adding %v claps to %s", clapIncrement, sourceURL)
 	sourceIP := c.IP()
 
 	item, err := utils.GetItem(sourceURL)

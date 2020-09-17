@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/duyet/applause-btn/api"
+	"github.com/duyet/applause-btn/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -12,8 +14,10 @@ import (
 
 func main() {
 	app := Setup()
+	defer utils.DB.Close()
 
 	// Start server
+	fmt.Print("Listen on port 3000")
 	log.Fatal(app.Listen(":3000"))
 }
 

@@ -9,12 +9,13 @@ import (
 	"github.com/dgraph-io/badger/v2"
 )
 
-var db *badger.DB
+// DB the connection to database
+var DB *badger.DB
 
 // GetDB open connection to badger db
 func GetDB() *badger.DB {
-	if db != nil {
-		return db
+	if DB != nil {
+		return DB
 	}
 
 	badgerLocation := "/tmp/badger"
@@ -24,12 +25,12 @@ func GetDB() *badger.DB {
 	}
 
 	var err error
-	db, err = badger.Open(badger.DefaultOptions(badgerLocation))
+	DB, err = badger.Open(badger.DefaultOptions(badgerLocation))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return db
+	return DB
 }
 
 // GetItem get Item from DB
