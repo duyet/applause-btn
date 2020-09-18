@@ -37,6 +37,7 @@ func Setup() *fiber.App {
 		return c.Send([]byte("Hello, World!"))
 	})
 	app.Get("/get-claps", api.GetClaps)
+	app.Get("/get-clappers", api.GetClappers)
 	app.Post("/get-multiple", api.GetMultiple)
 	app.Post("/update-claps", api.UpdateClaps)
 	app.Static("/public", "./public")
