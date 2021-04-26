@@ -1,4 +1,4 @@
-FROM golang:1.14 AS build
+FROM golang:1.16 AS build
 WORKDIR /go/src/github.com/duyet/applause-btn
 COPY . .
 RUN go mod download
