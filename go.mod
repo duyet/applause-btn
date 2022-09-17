@@ -1,6 +1,6 @@
 module github.com/duyet/applause-btn
 
-go 1.14
+go 1.19
 
 require (
 	github.com/DataDog/zstd v1.4.5 // indirect
