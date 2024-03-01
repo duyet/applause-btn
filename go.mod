@@ -14,6 +14,6 @@ require (
 	github.com/google/go-cmp v0.5.6
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.9.0
 	google.golang.org/protobuf v1.25.0 // indirect
 )
