@@ -18,7 +18,9 @@ import (
 func UpdateClaps(c *fiber.Ctx) error {
 	sourceURL, err := utils.GetSourceURL(c)
 	if err != nil {
-		return err
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid or missing URL",
+		})
 	}
 
 	body := c.Body()
@@ -30,7 +32,9 @@ func UpdateClaps(c *fiber.Ctx) error {
 	}
 
 	if !utils.IsURL(sourceURL) {
-		return fmt.Errorf("Referer is not a URL [%s]", sourceURL)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": fmt.Sprintf("Referer is not a valid URL: %s", sourceURL),
+		})
 	}
 
 	clapIncrement := utils.Clamp(claps, 1, 10)
@@ -53,8 +57,11 @@ func UpdateClaps(c *fiber.Ctx) error {
 			Clappers:  clappers,
 		}
 		if err := utils.PutItem(sourceURL, newItem); err != nil {
-			return err
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to save clap data",
+			})
 		}
+		log.Printf("First clap recorded: url=%s, ip=%s, claps=%d", sourceURL, sourceIP, clapIncrement)
 		return c.JSON(newItem.Claps)
 	}
 
@@ -71,10 +78,12 @@ func UpdateClaps(c *fiber.Ctx) error {
 	item.Clappers = appendToList(item.Clappers, clapperInfo)
 
 	if err := utils.PutItem(sourceURL, item); err != nil {
-		return err
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to save clap data",
+		})
 	}
 
-	fmt.Printf("%s   %v  %s", sourceURL, item, sourceIP)
+	log.Printf("Clap recorded: url=%s, ip=%s, total=%d", sourceURL, sourceIP, item.Claps)
 	return c.JSON(item.Claps)
 }
 
