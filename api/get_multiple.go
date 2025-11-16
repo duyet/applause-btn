@@ -32,8 +32,8 @@ func GetMultiple(c *fiber.Ctx) error {
 	// Limit the number of URLs that can be queried
 	if len(listURL) > MaxURLsPerRequest {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":   fmt.Sprintf("Too many URLs requested. Maximum is %d", MaxURLsPerRequest),
-			"maximum": MaxURLsPerRequest,
+			"error":     fmt.Sprintf("Too many URLs requested. Maximum is %d", MaxURLsPerRequest),
+			"maximum":   MaxURLsPerRequest,
 			"requested": len(listURL),
 		})
 	}

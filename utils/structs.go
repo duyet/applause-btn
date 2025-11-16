@@ -4,10 +4,10 @@ import "time"
 
 // Item data structure to be saved to db
 type Item struct {
-	SourceIP  string            // Deprecated: kept for backward compatibility, use SourceIPs
-	SourceIPs map[string]bool   // Set of IP addresses that have clapped
-	Claps     int               // Total number of claps
-	Clappers  []ClapperInfo     // Information about who clapped
+	SourceIP  string          // Deprecated: kept for backward compatibility, use SourceIPs
+	SourceIPs map[string]bool // Set of IP addresses that have clapped
+	Claps     int             // Total number of claps
+	Clappers  []ClapperInfo   // Information about who clapped
 }
 
 // ClapperInfo information about clapper
