@@ -41,30 +41,37 @@ func UpdateClaps(c *fiber.Ctx) error {
 
 	item, err := utils.GetItem(sourceURL)
 	if err != nil {
+		// New URL - create new item
 		clappers := []utils.ClapperInfo{}
 		if clapperInfo != nil {
 			clappers = []utils.ClapperInfo{*clapperInfo}
 		}
 
 		newItem := utils.Item{
-			SourceIP: sourceIP,
-			Claps:    clapIncrement,
-			Clappers: clappers,
+			SourceIPs: map[string]bool{sourceIP: true},
+			Claps:     clapIncrement,
+			Clappers:  clappers,
 		}
 		if err := utils.PutItem(sourceURL, newItem); err != nil {
 			return err
 		}
-	} else {
-		if item.SourceIP != "" && item.SourceIP == sourceIP {
-			return fmt.Errorf("multiple claps from the same sourceIp prohibited %s", sourceIP)
-		}
+		return c.JSON(newItem.Claps)
+	}
 
-		item.Claps += clapIncrement
-		item.SourceIP = sourceIP
-		item.Clappers = appendToList(item.Clappers, clapperInfo)
-		if err := utils.PutItem(sourceURL, item); err != nil {
-			return err
-		}
+	// Check if this IP has already clapped
+	if item.HasClappedFrom(sourceIP) {
+		return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+			"error": "You have already clapped for this URL",
+			"ip":    sourceIP,
+		})
+	}
+
+	// Add the clap
+	item.AddClapFrom(sourceIP, clapIncrement)
+	item.Clappers = appendToList(item.Clappers, clapperInfo)
+
+	if err := utils.PutItem(sourceURL, item); err != nil {
+		return err
 	}
 
 	fmt.Printf("%s   %v  %s", sourceURL, item, sourceIP)

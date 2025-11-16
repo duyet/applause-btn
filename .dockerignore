@@ -1,0 +1,49 @@
+# Git
+.git
+.gitignore
+.github
+
+# Documentation
+README.md
+LICENSE
+*.md
+
+# Development files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Test files
+*_test.go
+test.html
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+applause
+applause-btn
+applause-test
+
+# Database
+/tmp
+*.db
+badger*
+
+# Dependencies (will be downloaded during build)
+vendor/
+
+# CI/CD
+.github/workflows
+
+# Docker
+Dockerfile*
+.dockerignore
+docker-compose.yml
+
+# Environment
+.env
+.env.*
