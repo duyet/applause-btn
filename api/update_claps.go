@@ -18,8 +18,8 @@ import (
 func UpdateClaps(c *fiber.Ctx) error {
 	sourceURL, err := utils.GetSourceURL(c)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid or missing URL",
+		return c.Status(fiber.StatusBadRequest).JSON(errorResponse{
+			Error: "Invalid or missing URL",
 		})
 	}
 
@@ -32,8 +32,8 @@ func UpdateClaps(c *fiber.Ctx) error {
 	}
 
 	if !utils.IsURL(sourceURL) {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": fmt.Sprintf("Referer is not a valid URL: %s", sourceURL),
+		return c.Status(fiber.StatusBadRequest).JSON(errorResponse{
+			Error: fmt.Sprintf("Referer is not a valid URL: %s", sourceURL),
 		})
 	}
 
@@ -57,8 +57,8 @@ func UpdateClaps(c *fiber.Ctx) error {
 			Clappers:  clappers,
 		}
 		if err := utils.PutItem(sourceURL, newItem); err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": "Failed to save clap data",
+			return c.Status(fiber.StatusInternalServerError).JSON(errorResponse{
+				Error: "Failed to save clap data",
 			})
 		}
 		log.Printf("First clap recorded: url=%s, ip=%s, claps=%d", sourceURL, sourceIP, clapIncrement)
@@ -67,9 +67,9 @@ func UpdateClaps(c *fiber.Ctx) error {
 
 	// Check if this IP has already clapped
 	if item.HasClappedFrom(sourceIP) {
-		return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
-			"error": "You have already clapped for this URL",
-			"ip":    sourceIP,
+		return c.Status(fiber.StatusTooManyRequests).JSON(errorResponseWithIP{
+			Error: "You have already clapped for this URL",
+			IP:    sourceIP,
 		})
 	}
 
@@ -78,8 +78,8 @@ func UpdateClaps(c *fiber.Ctx) error {
 	item.Clappers = appendToList(item.Clappers, clapperInfo)
 
 	if err := utils.PutItem(sourceURL, item); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to save clap data",
+		return c.Status(fiber.StatusInternalServerError).JSON(errorResponse{
+			Error: "Failed to save clap data",
 		})
 	}
 

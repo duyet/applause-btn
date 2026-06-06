@@ -10,21 +10,21 @@ import (
 // GetClaps api get claps for a URL
 func GetClaps(c *fiber.Ctx) error {
 	if c.Get("Referer", "") == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "No Referer header set",
+		return c.Status(fiber.StatusBadRequest).JSON(errorResponse{
+			Error: "No Referer header set",
 		})
 	}
 
 	sourceURL, err := utils.GetSourceURL(c)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid or missing URL",
+		return c.Status(fiber.StatusBadRequest).JSON(errorResponse{
+			Error: "Invalid or missing URL",
 		})
 	}
 
 	if !utils.IsURL(sourceURL) {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": fmt.Sprintf("Referer is not a valid URL: %s", sourceURL),
+		return c.Status(fiber.StatusBadRequest).JSON(errorResponse{
+			Error: fmt.Sprintf("Referer is not a valid URL: %s", sourceURL),
 		})
 	}
 

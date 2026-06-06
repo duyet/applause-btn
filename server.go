@@ -129,29 +129,54 @@ func Setup(cfg *config.Config) *fiber.App {
 	return app
 }
 
+type indexEndpoints struct {
+	Health      string `json:"health"`
+	GetClaps    string `json:"get_claps"`
+	GetClappers string `json:"get_clappers"`
+	GetMultiple string `json:"get_multiple"`
+	UpdateClaps string `json:"update_claps"`
+}
+
+type indexResponse struct {
+	Service   string         `json:"service"`
+	Version   string         `json:"version"`
+	Status    string         `json:"status"`
+	Endpoints indexEndpoints `json:"endpoints"`
+}
+
 // indexHandler handles the root endpoint
 func indexHandler(c *fiber.Ctx) error {
-	return c.JSON(fiber.Map{
-		"service": "Applause Button",
-		"version": "2.0.0",
-		"status":  "running",
-		"endpoints": fiber.Map{
-			"health":       "/health",
-			"get_claps":    "/get-claps",
-			"get_clappers": "/get-clappers",
-			"get_multiple": "/get-multiple (POST)",
-			"update_claps": "/update-claps (POST)",
+	return c.JSON(indexResponse{
+		Service: "Applause Button",
+		Version: "2.0.0",
+		Status:  "running",
+		Endpoints: indexEndpoints{
+			Health:      "/health",
+			GetClaps:    "/get-claps",
+			GetClappers: "/get-clappers",
+			GetMultiple: "/get-multiple (POST)",
+			UpdateClaps: "/update-claps (POST)",
 		},
 	})
+}
+
+type healthResponse struct {
+	Status string `json:"status"`
+	Time   string `json:"time"`
 }
 
 // healthCheck endpoint for monitoring
 func healthCheck(c *fiber.Ctx) error {
 	// TODO: Add database health check
-	return c.JSON(fiber.Map{
-		"status": "healthy",
-		"time":   time.Now().Format(time.RFC3339),
+	return c.JSON(healthResponse{
+		Status: "healthy",
+		Time:   time.Now().Format(time.RFC3339),
 	})
+}
+
+type errorResponse struct {
+	Error  string `json:"error"`
+	Status int    `json:"status"`
 }
 
 // customErrorHandler provides consistent error responses
@@ -167,9 +192,9 @@ func customErrorHandler(c *fiber.Ctx, err error) error {
 	log.Printf("Error: %v (path: %s, ip: %s)", err, c.Path(), c.IP())
 
 	// Return error response
-	return c.Status(code).JSON(fiber.Map{
-		"error":  err.Error(),
-		"status": code,
+	return c.Status(code).JSON(errorResponse{
+		Error:  err.Error(),
+		Status: code,
 	})
 }
 

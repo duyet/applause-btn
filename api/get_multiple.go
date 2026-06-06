@@ -20,8 +20,8 @@ func GetMultiple(c *fiber.Ctx) error {
 	var listURL []string
 	err := json.Unmarshal([]byte(body), &listURL)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Request body must be a JSON array of URLs",
+		return c.Status(fiber.StatusBadRequest).JSON(errorResponse{
+			Error: "Request body must be a JSON array of URLs",
 		})
 	}
 
@@ -31,28 +31,28 @@ func GetMultiple(c *fiber.Ctx) error {
 
 	// Limit the number of URLs that can be queried
 	if len(listURL) > MaxURLsPerRequest {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":     fmt.Sprintf("Too many URLs requested. Maximum is %d", MaxURLsPerRequest),
-			"maximum":   MaxURLsPerRequest,
-			"requested": len(listURL),
+		return c.Status(fiber.StatusBadRequest).JSON(errorResponseWithLimit{
+			Error:     fmt.Sprintf("Too many URLs requested. Maximum is %d", MaxURLsPerRequest),
+			Maximum:   MaxURLsPerRequest,
+			Requested: len(listURL),
 		})
 	}
 
 	// Validate every item is a URL
 	for i, url := range listURL {
 		if !utils.IsURL(url) {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"error": fmt.Sprintf("Invalid URL at index %d: %s", i, url),
-				"index": i,
-				"url":   url,
+			return c.Status(fiber.StatusBadRequest).JSON(errorResponseWithURL{
+				Error: fmt.Sprintf("Invalid URL at index %d: %s", i, url),
+				Index: i,
+				URL:   url,
 			})
 		}
 	}
 
 	items, err := utils.GetItems(listURL)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to retrieve items from database",
+		return c.Status(fiber.StatusInternalServerError).JSON(errorResponse{
+			Error: "Failed to retrieve items from database",
 		})
 	}
 
