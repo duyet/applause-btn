@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -37,10 +36,8 @@ func main() {
 
 	// Set global DB for backward compatibility with existing handlers
 	// TODO: Refactor all handlers to use dependency injection instead
-	opts := utils.GetDB()
-	if opts == nil {
-		// Initialize global DB from the new Database instance
-		utils.DB = db.(*utils.Database).GetRawDB()
+	if utils.GetDB() == nil {
+		utils.DB = db.GetRawDB()
 	}
 
 	// Setup Fiber app
@@ -62,12 +59,8 @@ func main() {
 
 	log.Println("Shutting down gracefully...")
 
-	// Give outstanding requests 30 seconds to complete
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
 	// Shutdown server
-	if err := app.ShutdownWithContext(ctx); err != nil {
+	if err := app.Shutdown(); err != nil {
 		log.Printf("Server forced to shutdown: %v", err)
 	}
 
