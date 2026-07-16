@@ -7,7 +7,7 @@ require (
 	github.com/dgraph-io/badger/v2 v2.2007.4
 	github.com/gofiber/fiber/v2 v2.20.2
 	github.com/google/go-cmp v0.5.6
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.11.1
 )
 
 require (
